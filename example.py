@@ -1,15 +1,23 @@
+"""
+Step #2: basic config.
+"""
+
 import logging
 
-# Print uses sys.stdout by default
-# https://github.com/python/cpython/blob/2.7/Python/bltinmodule.c#L1580
-print('Print')
+# The call to basicConfig() should come before any calls
+# to debug(), info() etc.
+# As it’s intended as a one-off simple configuration facility,
+# only the first call will actually do anything:
+# subsequent calls are effectively no-ops.
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(process)d-%(levelname)s-%(message)s',
+)
 
-# Logging provides a set of convenience functions for simple logging usage
+print('Print')  # Print uses sys.stdout by default
+
 logging.debug('Debug')
 logging.info('Info')
-# The default level is WARNING,
-# which means that only events of this level and above will be tracked,
-# unless the logging package is configured to do otherwise.
 logging.warning('Warning')
 logging.error('Error')
 logging.critical('Critical')
@@ -18,6 +26,8 @@ logging.critical('Critical')
 # Output:
 
 # Print
-# WARNING:root:Warning
-# ERROR:root:Error
-# CRITICAL:root:Critical
+# 14733-DEBUG-Debug
+# 14733-INFO-Info
+# 14733-WARNING-Warning
+# 14733-ERROR-Error
+# 14733-CRITICAL-Critical
