@@ -1,17 +1,16 @@
 """
-Step #2: basic config.
+Step #3: file output.
 """
 
 import logging
 
-# The call to basicConfig() should come before any calls
-# to debug(), info() etc.
-# As it’s intended as a one-off simple configuration facility,
-# only the first call will actually do anything:
-# subsequent calls are effectively no-ops.
+# `filemode` specifies the mode to open the file, if filename is specified
+# (if filemode is unspecified, it defaults to 'a').
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(process)d-%(levelname)s-%(message)s',
+    filename='example.log',
+    filemode='w',  # overwrite
 )
 
 print('Print')  # Print uses sys.stdout by default
@@ -23,11 +22,14 @@ logging.error('Error')
 logging.critical('Critical')
 
 
-# Output:
-
+# Console Output:
 # Print
-# 14733-DEBUG-Debug
-# 14733-INFO-Info
-# 14733-WARNING-Warning
-# 14733-ERROR-Error
-# 14733-CRITICAL-Critical
+
+# File output:
+# File: example.log
+# ───────┼──────────────────────────
+#    1   │ 15263-DEBUG-Debug
+#    2   │ 15263-INFO-Info
+#    3   │ 15263-WARNING-Warning
+#    4   │ 15263-ERROR-Error
+#    5   │ 15263-CRITICAL-Critical
