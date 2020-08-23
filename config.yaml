@@ -1,0 +1,25 @@
+version: 1
+formatters:
+  withPid:
+    format: '%(process)d - %(levelname)s - %(message)s'
+  withTime:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: withPid
+    stream: ext://sys.stdout
+  file:
+    class: logging.FileHandler  
+    level: ERROR
+    formatter: withTime
+    filename: example.log
+loggers:
+  basic:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: no
+root:
+  level: DEBUG
+  handlers: [console, file]

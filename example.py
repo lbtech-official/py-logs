@@ -1,28 +1,18 @@
 """
-Step #6: error handling.
+Step #7: configuration over yaml.
 """
 from math import sqrt
 import logging
+import logging.config
+import yaml  # pip install pyyaml
+
+# Load yaml config
+with open('config.yaml', 'r') as file:
+    config = yaml.safe_load(file.read())
+    logging.config.dictConfig(config)
 
 # Custom logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)  # remember to configure top-level logging level
-
-# Configure handlers
-# Stream
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.DEBUG)
-stream_formatter = logging.Formatter('%(process)d - %(levelname)s - %(message)s')
-stream_handler.setFormatter(stream_formatter)
-# File
-file_handler = logging.FileHandler(filename='example.log')
-file_handler.setLevel(logging.ERROR)
-file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-file_handler.setFormatter(file_formatter)
-
-# Configure logger with two handlers
-logger.addHandler(stream_handler)
-logger.addHandler(file_handler)
 
 print('Print')  # Print uses sys.stdout by default
 
