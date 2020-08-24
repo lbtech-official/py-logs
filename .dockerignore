@@ -1,0 +1,12 @@
+__pycache__
+Dockerfile
+.gitignore
+.flake8
+.deploy
+/venv
+*.env
+*.log
+**/*.pyc
+**/*.pytest_cache
+**/*.idea
+**/*.git
