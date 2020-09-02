@@ -1,5 +1,5 @@
 
-# Django development server
+# 1. Django development server
 
 1. Run server: `python manage.py runserver`
 
@@ -34,7 +34,7 @@ ZeroDivisionError: division by zero
 SERVER: ERROR 31/Aug/2020 17:54:39,433 basehttp 10116 123145534590976 "GET /myapp/error HTTP/1.1" 500 57922
 ```
 
-# Uwsgi server
+# 2. Uwsgi server
 
 1. Run uwsgi http-server: `cd framework && uwsgi ./logs_example/conf/uwsgi.ini`
 
@@ -66,3 +66,21 @@ Traceback (most recent call last):
 ZeroDivisionError: division by zero
 UWSGI: [pid: 3716] 127.0.0.1 {28 vars in 326 bytes} [Wed Sep  2 16:45:21 2020] GET /myapp/error => generated 52393 bytes in 40 msecs (HTTP/1.1 500) 6 headers in 186 bytes (2 switches on core 0)
 ```
+
+# 3. Docker (Django + Uwsgi)
+
+1. Build image: 
+
+    `$ cd framework/logs_example`
+
+    `$ docker build -t django_log .`
+
+2. Run container:
+
+    `$ docker run -p 8000:8000 --name django_log --rm django_log`
+
+3. Execute `curl localhost:8000/myapp/index` and `curl localhost:8000/myapp/error` to see the same output as in (#2. Uwsgi server)
+
+4. Stop container:
+
+    `$ docker stop django_log`
