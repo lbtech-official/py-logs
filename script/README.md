@@ -100,11 +100,14 @@ JSON file output:
 
 # 2. Structured log: `JSON-log-formatter` (Docker, Loki)
 
+https://github.com/marselester/json-log-formatter
+
 1. Run Loki environment from `/loki`, see `/loki/README.md`
 
 2. Run script in container with Loki as log-driver:
 
 ```bash
+$ docker build -t py_log_script .
 $ docker run --log-driver loki --log-opt loki-url=http://localhost:3100/loki/api/v1/push --name py_log_script --rm py_log_script
 ```
 
@@ -123,3 +126,22 @@ Traceback (most recent call last):
 ValueError: math domain error
 ```
 * `JSON-log-formatter` has Python 2/3 support
+
+
+# 2.1 Structured log: `JSON-log-formatter` with custom format (Docker, Loki)
+
+- same steps as in #2:
+
+```json
+Print
+{"extra_code": "De", "nested": {"foo": 1, "bar": "bar"}, "message": "Dbg mes", "level": "DEBUG", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "In", "message": "Inf mes", "level": "INFO", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "Wa", "message": "Wrng mes", "level": "WARNING", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "Cr", "message": "Crtcl mes", "level": "CRITICAL", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "Ex", "message": "Handled exception", "level": "ERROR", "name": "__main__", "filename": "example.py", "funcName": "<module>", "exc_info": "Traceback (most recent call last):\n  File \"example.py\", line 29, in <module>\n    1/0\nZeroDivisionError: division by zero"}
+Traceback (most recent call last):
+  File "example.py", line 34, in <module>
+    sqrt(-1)  # !Uncomment to see that unhandled exceptions will appear in STDERR
+ValueError: math domain error
+
+```

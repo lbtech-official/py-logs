@@ -1,5 +1,5 @@
 """
-Step #8: Docker logs.
+JSON-log-formatter.
 """
 import logging
 import logging.config
@@ -13,11 +13,16 @@ with open('config.yaml', 'r') as file:
 
 logger = logging.getLogger(__name__)
 
+nested = {
+    'foo': 1,
+    'bar': 'bar',
+}
+
 print('Print')
-logger.debug('Debug', extra={'extra_code': 'De'})
-logger.info('Info', extra={'extra_code': 'In'})
-logger.warning('Warning', extra={'extra_code': 'Wa'})
-logger.critical('Critical', extra={'extra_code': 'Cr'})
+logger.debug('Dbg mes', extra={'extra_code': 'De', 'nested': nested})
+logger.info('Inf mes', extra={'extra_code': 'In'})
+logger.warning('Wrng mes', extra={'extra_code': 'Wa'})
+logger.critical('Crtcl mes', extra={'extra_code': 'Cr'})
 
 # Handled exception
 try:

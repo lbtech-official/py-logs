@@ -1,7 +1,7 @@
 version: 1
 formatters:
   json:
-    (): 'json_log_formatter.JSONFormatter'
+    (): 'custom_formatter.CustomJSONFormatter'
 handlers:
   console:
     class: logging.StreamHandler
