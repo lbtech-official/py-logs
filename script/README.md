@@ -100,7 +100,8 @@ JSON file output:
 
 # 2. Structured log: `JSON-log-formatter` (Docker, Loki)
 
-https://github.com/marselester/json-log-formatter
+* https://github.com/marselester/json-log-formatter
+* Python 2/3 support
 
 1. Run Loki environment from `/loki`, see `/loki/README.md`
 
@@ -125,8 +126,6 @@ Traceback (most recent call last):
     sqrt(-1)  # !Uncomment to see that unhandled exceptions will appear in STDERR
 ValueError: math domain error
 ```
-* `JSON-log-formatter` has Python 2/3 support
-
 
 # 2.1 Structured log: `JSON-log-formatter` with custom format (Docker, Loki)
 
@@ -162,4 +161,34 @@ Traceback (most recent call last):
     sqrt(-1)  # !Uncomment to see that unhandled exceptions will appear in STDERR
 ValueError: math domain error
 
+```
+
+
+# 3. Structured log: `python-json-logger` with custom format and application name in config (Docker, Loki)
+
+* https://github.com/madzak/python-json-logger
+* Python 2/3
+
+1. Run Loki environment from `/loki`, see `/loki/README.md`
+
+2. Run script in container with Loki as log-driver:
+
+```bash
+$ docker build -t py_log_script .
+$ docker run --log-driver loki --log-opt loki-url=http://localhost:3100/loki/api/v1/push --name py_log_script --rm py_log_script
+```
+
+3. See parsed JSON rows in Grafana dashboard: http://localhost:3000, see `/loki/README.md`, similar to:
+
+```json
+Print
+{"process": 1, "asctime": "2020-09-10 18:44:34,816", "name": "__main__", "levelname": "DEBUG", "message": "Dbg mes", "extra_code": "De", "nested": {"foo": 1, "bar": "bar"}, "app": "myExampleApp"}
+{"process": 1, "asctime": "2020-09-10 18:44:34,816", "name": "__main__", "levelname": "INFO", "message": "Inf mes", "extra_code": "In", "app": "myExampleApp"}
+{"process": 1, "asctime": "2020-09-10 18:44:34,817", "name": "__main__", "levelname": "WARNING", "message": "Wrng mes", "extra_code": "Wa", "app": "myExampleApp"}
+{"process": 1, "asctime": "2020-09-10 18:44:34,817", "name": "__main__", "levelname": "CRITICAL", "message": "Crtcl mes", "extra_code": "Cr", "app": "myExampleApp"}
+{"process": 1, "asctime": "2020-09-10 18:44:34,817", "name": "__main__", "levelname": "ERROR", "message": "Handled exception", "exc_info": "Traceback (most recent call last):\n  File \"example.py\", line 29, in <module>\n    1/0\nZeroDivisionError: division by zero", "extra_code": "Ex", "app": "myExampleApp"}
+Traceback (most recent call last):
+  File "example.py", line 34, in <module>
+    sqrt(-1)  # !Uncomment to see that unhandled exceptions will appear in STDERR
+ValueError: math domain error
 ```
