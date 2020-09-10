@@ -1,12 +1,12 @@
 version: 1
 formatters:
-  basic:
-    format: '%(process)d - %(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  json:
+    (): 'json_log_formatter.JSONFormatter'
 handlers:
   console:
     class: logging.StreamHandler
     level: DEBUG
-    formatter: basic
+    formatter: json
     stream: ext://sys.stdout
 loggers:
   basic:
