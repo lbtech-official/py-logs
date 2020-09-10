@@ -145,3 +145,21 @@ Traceback (most recent call last):
 ValueError: math domain error
 
 ```
+
+# 2.2 Structured log: `JSON-log-formatter` with custom format and application name in config (Docker, Loki)
+
+- same steps as in #2:
+
+```json
+Print
+{"extra_code": "De", "nested": {"foo": 1, "bar": "bar"}, "app": "myExampleApp", "message": "Dbg mes", "level": "DEBUG", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "In", "app": "myExampleApp", "message": "Inf mes", "level": "INFO", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "Wa", "app": "myExampleApp", "message": "Wrng mes", "level": "WARNING", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "Cr", "app": "myExampleApp", "message": "Crtcl mes", "level": "CRITICAL", "name": "__main__", "filename": "example.py", "funcName": "<module>"}
+{"extra_code": "Ex", "app": "myExampleApp", "message": "Handled exception", "level": "ERROR", "name": "__main__", "filename": "example.py", "funcName": "<module>", "exc_info": "Traceback (most recent call last):\n  File \"example.py\", line 29, in <module>\n    1/0\nZeroDivisionError: division by zero"}
+Traceback (most recent call last):
+  File "example.py", line 34, in <module>
+    sqrt(-1)  # !Uncomment to see that unhandled exceptions will appear in STDERR
+ValueError: math domain error
+
+```

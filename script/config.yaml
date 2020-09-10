@@ -2,6 +2,7 @@ version: 1
 formatters:
   json:
     (): 'custom_formatter.CustomJSONFormatter'
+    app: 'myExampleApp'
 handlers:
   console:
     class: logging.StreamHandler
