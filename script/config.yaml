@@ -1,7 +1,8 @@
 version: 1
 formatters:
   basic:
-    format: '%(process)d - %(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    (): 'custom_formatter.CustomJSONFormatter'
+    app: 'myExampleApp'
 handlers:
   console:
     class: logging.StreamHandler

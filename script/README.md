@@ -192,3 +192,60 @@ Traceback (most recent call last):
     sqrt(-1)  # !Uncomment to see that unhandled exceptions will appear in STDERR
 ValueError: math domain error
 ```
+
+
+# 4. Structured log: `structlog` with custom format and colored output
+
+* https://www.structlog.org/en/16.0.0/index.html
+* Python 3
+
+1. Script only (plain log):
+  
+  ```bash
+   $ cd ./script
+   $ python3 -u structlog_example.py
+  ``` 
+  will give `colored` output to console:
+
+  ```log
+Print
+2020-09-13 17:39:38 [debug    ] Dbg mes                        app=myApp code=De funcName=<module> lineno=15 nested={'foo': 1, 'bar': 'bar'} pathname=structlog_example.py process=6427 thread=4491980224
+2020-09-13 17:39:38 [info     ] Inf mes                        app=myApp code=In funcName=<module> lineno=16 pathname=structlog_example.py process=6427 thread=4491980224
+2020-09-13 17:39:38 [warning  ] Wrng mes                       app=myApp code=Wa funcName=<module> lineno=17 pathname=structlog_example.py process=6427 thread=4491980224
+2020-09-13 17:39:38 [critical ] Crtcl mes                      app=myApp code=Cr funcName=<module> lineno=18 pathname=structlog_example.py process=6427 thread=4491980224
+2020-09-13 17:39:38 [error    ] Handled exception              app=myApp bar=1 code=Ex funcName=handled_error_func lineno=27 pathname=structlog_example.py process=6427 thread=4491980224
+Traceback (most recent call last):
+  File "structlog_example.py", line 25, in handled_error_func
+    1/0
+ZeroDivisionError: division by zero
+==========
+Traceback (most recent call last):
+  File "structlog_example.py", line 37, in <module>
+    unhandled_error_func()
+  File "structlog_example.py", line 33, in unhandled_error_func
+    sqrt(-1)
+ValueError: math domain error
+
+  ```
+
+2. Script only (JSON):
+  
+  - change `struclog_conf.py` -> `LOGGING['loggers']['handlers'] = ["prod"]` and run to see output in JSON:
+
+  ```json
+  Print
+{"code": "De", "nested": {"foo": 1, "bar": "bar"}, "event": "Dbg mes", "app": "myApp", "funcName": "<module>", "thread": 4666121664, "pathname": "structlog_example.py", "lineno": 15, "process": 6861, "level": "debug", "timestamp": "2020-09-13 17:44:08"}
+{"code": "In", "event": "Inf mes", "app": "myApp", "funcName": "<module>", "thread": 4666121664, "pathname": "structlog_example.py", "lineno": 16, "process": 6861, "level": "info", "timestamp": "2020-09-13 17:44:08"}
+{"code": "Wa", "event": "Wrng mes", "app": "myApp", "funcName": "<module>", "thread": 4666121664, "pathname": "structlog_example.py", "lineno": 17, "process": 6861, "level": "warning", "timestamp": "2020-09-13 17:44:08"}
+{"code": "Cr", "event": "Crtcl mes", "app": "myApp", "funcName": "<module>", "thread": 4666121664, "pathname": "structlog_example.py", "lineno": 18, "process": 6861, "level": "critical", "timestamp": "2020-09-13 17:44:08"}
+{"code": "Ex", "bar": "1", "event": "Handled exception", "app": "myApp", "funcName": "handled_error_func", "thread": 4666121664, "pathname": "structlog_example.py", "lineno": 27, "process": 6861, "level": "error", "timestamp": "2020-09-13 17:44:08", "exception": "Traceback (most recent call last):\n  File \"structlog_example.py\", line 25, in handled_error_func\n    1/0\nZeroDivisionError: division by zero"}
+==========
+Traceback (most recent call last):
+  File "structlog_example.py", line 37, in <module>
+    unhandled_error_func()
+  File "structlog_example.py", line 33, in unhandled_error_func
+    sqrt(-1)
+ValueError: math domain error
+  ```
+
+  3. Output will be the same with Docker + Loki because of JSON.
