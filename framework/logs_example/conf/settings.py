@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = 'q!ygu(_2hn02og*m$b9gnjqmn*j$fk+pt@tkrs8jeh5@9r+2cq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -144,20 +144,33 @@ LOGGING = {
             'format': 'SERVER: {levelname} {asctime} {module} {process:d} {thread:d} {message}',
             'style': '{',
         },
-        'basic': {
+        'development': {
             'format': 'APP: %(process)d - %(asctime)s - %(name)s - %(levelname)s - %(message)s',
             'style': '%',
+        },
+        'json': {
+            '()': 'conf.custom_formatter.CustomJSONFormatter',
+            'app': 'myExampleApp',
+            'format': '%(asctime)s %(process)d %(thread)d %(levelname)s %(pathname)s %(filename)s %(module)s %(funcName)s %(lineno)s %(message)s',
         }
     },
     'handlers': {
-        'console': {
+        'console_dev': {
             'level': 'INFO',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'formatter': 'basic',
+            'formatter': 'development',
+        },
+        'console_prod': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stdout',
+            'formatter': 'json',
         },
         'django.server': {
             'level': 'INFO',
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'django.server',
         },
@@ -169,7 +182,7 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', 'console_prod'],
             'level': 'ERROR',
             'propagate': True,
         },
@@ -180,7 +193,7 @@ LOGGING = {
             # and see `django.server` log duplicates appear in parent logger
         },
         'myapp': {
-            'handlers': ['console'],
+            'handlers': ['console_dev', 'console_prod'],
             'level': 'INFO',
         },
     }
