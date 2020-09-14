@@ -3,6 +3,7 @@ formatters:
   basic:
     (): 'custom_formatter.CustomJSONFormatter'
     app: 'myExampleApp'
+    format: '%(process)d %(asctime)s %(name)s %(levelname)s %(message)s'
 handlers:
   console:
     class: logging.StreamHandler
