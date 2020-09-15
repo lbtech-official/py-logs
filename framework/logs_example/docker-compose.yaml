@@ -7,12 +7,11 @@ x-logging: &loki-logging
 
 services:
     web:
-        build: .
+        image: chealexey/public_repo:django_log
         logging: *loki-logging
 
     nginx:
         image: nginx:latest
-        container_name: nginx_logs
         depends_on:
             - web
         ports:

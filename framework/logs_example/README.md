@@ -126,12 +126,25 @@ django_logs | UWSGI: [pid: 10] 172.19.0.1 {32 vars in 358 bytes} [Fri Sep  4 17:
 nginx_logs | NGINX: 172.19.0.1 - - [04/Sep/2020:17:21:20 +0000] "GET /myapp/error HTTP/1.1" 500 52772 "-" "curl/7.64.1"rt=0.051 uct="0.001" uht="0.051" urt="0.051"
 ```
 
-# 5. Scale application with `docker-compose`
+# 5. Scale Django application
+
+## 5.1 Scale with `docker-compose`
 
 ```bash
 $ docker-compose up --scale web=3
 ```
-This will scale Django-application up to 3 instances. 
+- This will scale Django-application up to 3 instances. 
 
-You will see logs from `web_1`, `web_2`, `web_3` in Loki.
+- You will see logs from `web_1`, `web_2`, `web_3` in Loki.
 
+## 5.2 Scale with `docker stack`
+
+1. In `Docker-desktop/Preferences/Kubernetes` enable options `Enable Kubernetes` and `Deploy Docker Stacks to Kubernetes by default`
+2. Run stack in K8S cluster:
+```bash
+$ docker stack deploy --compose-file docker-compose.yaml django_log_k8_stack
+```
+!!! Pay attention, that `docker stack` doesn't support `logging` section with logging drivers except of `json-file` and `journald`.
+That is why you **won't see logs in Loki**.
+
+PS: remove stack with `docker stack rm django_log_k8_stack`
