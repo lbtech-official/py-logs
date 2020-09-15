@@ -125,3 +125,13 @@ django_logs | ZeroDivisionError: division by zero
 django_logs | UWSGI: [pid: 10] 172.19.0.1 {32 vars in 358 bytes} [Fri Sep  4 17:21:20 2020] GET /myapp/error => generated 52772 bytes in 50 msecs (HTTP/1.1 500) 6 headers in 186 bytes (1 switches on core 0)
 nginx_logs | NGINX: 172.19.0.1 - - [04/Sep/2020:17:21:20 +0000] "GET /myapp/error HTTP/1.1" 500 52772 "-" "curl/7.64.1"rt=0.051 uct="0.001" uht="0.051" urt="0.051"
 ```
+
+# 5. Scale application with `docker-compose`
+
+```bash
+$ docker-compose up --scale web=3
+```
+This will scale Django-application up to 3 instances. 
+
+You will see logs from `web_1`, `web_2`, `web_3` in Loki.
+

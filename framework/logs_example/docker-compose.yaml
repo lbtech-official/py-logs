@@ -8,7 +8,6 @@ x-logging: &loki-logging
 services:
     web:
         build: .
-        container_name: django_logs
         logging: *loki-logging
 
     nginx:
