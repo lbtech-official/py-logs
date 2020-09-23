@@ -144,7 +144,67 @@ $ docker-compose up --scale web=3
 ```bash
 $ docker stack deploy --compose-file docker-compose.yaml django_log_k8_stack
 ```
-!!! Pay attention, that `docker stack` doesn't support `logging` section with logging drivers except of `json-file` and `journald`.
+*!!! PAY ATTENTION*: `docker stack` doesn't support `logging` section with logging drivers except of `json-file` and `journald`.
 That is why you **won't see logs in Loki**.
 
 PS: remove stack with `docker stack rm django_log_k8_stack`
+
+## 5.3 Scale with Kubernetes
+
+### 5.3.1 Setup environment
+
+1. [Install](https://kubernetes.io/docs/tasks/tools/install-minikube/) and start `minikube`
+2. [Install `helm`](https://helm.sh/docs/intro/install/)
+3. [Install `Loki stack`](https://grafana.com/docs/loki/latest/installation/helm/): 
+- Use `default` namespace. Because all the configs in `/k8s/*` use `default` namespace. 
+- Use `--set grafana.enabled=true` flag
+- Don't forget to `port-forward` Grafana to localhost
+
+This will setup Loki/Grafana/Promtail in K8S (minikube) cluster.
+
+4. Start `minikube` (if not started):
+```bash
+$ minikube start
+```
+5. Activate `Ingress` plugin for `minikube`:
+```bash
+$ minikube addons enable ingress
+```
+6. Start `dashboard` web interface:
+```bash
+$ minikube dashboard
+```
+
+### 5.3.2 Deploy Django application
+
+```bash
+$ cd framework/logs_example/k8s/
+```
+
+1. Create `Deployment` with 3 replicas:
+```bash
+$ kubectl apply -f deployment.yaml
+```
+
+2. Create `Service` with `NodePort` type:
+```bash
+$ kubectl apply -f deployment.yaml
+```
+
+3. Create `Ingress` with `nginx` controller:
+```bash
+$ kubectl apply -f ingress.yaml
+```
+
+4. Create `Configmap` for `Ingress`:
+```bash
+$ kubectl apply -f configmap.yaml
+```
+- Pay attention, that we use `nginx-load-balancer-conf` as `name` in `configmap.yaml`. This allows to automatically reload `Ingress` controller with new config after first upload or every time it changes. Please verify this name inside `kube-system` namespace in `Config and Storage/Config Maps` section inside minikube dashboard.
+
+5. Inside minikube dashboard select `default` namespace and go to `Service/Ingresses`. Copy exposed IP of `nginx-ingress` in `Endpoints` column.
+
+
+### 5.3.3 Request endpoints
+
+1. Request with curl `<IP>/myapp/index` and `<IP>/myapp/error` several times and see structured JSON logs of app/uwsgi/nginx in Grafana http://localhost:3000
